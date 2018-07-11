@@ -2,8 +2,10 @@
 
 namespace h0rseduck\multilingual\widgets;
 
+use h0rseduck\multilingual\behaviors\MultilingualBehavior;
 use Yii;
 use h0rseduck\multilingual\containers\MultilingualFieldContainer;
+use yii\helpers\ArrayHelper;
 
 /**
  * Multilingual ActiveForm
@@ -32,7 +34,9 @@ class ActiveForm extends \yii\bootstrap\ActiveForm
 
         if (!$notMultilingual && ($multilingualField || $multilingualAttribute)) {
             if($multilingualAttribute){
-                $languages = array_keys($model->getBehavior('multilingual')->languages);
+                /** @var MultilingualBehavior $behavior */
+                $behavior = $model->getBehavior('multilingual');
+                $languages = ArrayHelper::getColumn($behavior->getLanguages(), $behavior->languageModelFieldCode);
             } else {
                 $languages = (!empty($options['languages'])) ? array_keys($options['languages']) : [Yii::$app->language];
             }
@@ -57,7 +61,11 @@ class ActiveForm extends \yii\bootstrap\ActiveForm
      */
     public function languageSwitcher($model, $view = null)
     {
-        $languages = ($model->getBehavior('multilingual')) ? $languages = $model->getBehavior('multilingual')->languages : [];
+        $languages = [];
+        if($behavior = $model->getBehavior('multilingual')) {
+            /** @var MultilingualBehavior $behavior */
+            $languages = ArrayHelper::map($behavior->getLanguages(), $behavior->languageModelFieldCode, $behavior->languageModelFieldTitle);
+        }
         
         return FormLanguageSwitcher::widget(['languages' => $languages, 'view' => $view]);
     }

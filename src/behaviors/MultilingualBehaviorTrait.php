@@ -106,7 +106,7 @@ trait MultilingualBehaviorTrait
         if (array_key_exists($name, $this->_multilingualAttributes)) {
             return $this->_multilingualAttributes[$name];
         } elseif (in_array($name, $this->attributes)) {
-            $name = $this->getAttributeName($name, $this->_currentLanguage);
+            $name = $this->getAttributeName($name, $this->_currentLanguage[$this->languageModelFieldCode]);
             return $this->_multilingualAttributes[$name];
         }
         return null;
@@ -119,7 +119,7 @@ trait MultilingualBehaviorTrait
     public function setMultilingualAttribute($name, $value)
     {
         if (in_array($name, $this->attributes)) {
-            $name = $this->getAttributeName($name, $this->_currentLanguage);
+            $name = $this->getAttributeName($name, $this->_currentLanguage[$this->languageModelFieldCode]);
         }
 
         $this->_multilingualAttributes[$name] = $value;

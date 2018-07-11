@@ -27,6 +27,13 @@ class m170101_101010_create_post_table extends Migration {
         if ($this->db->driverName === 'mysql') {
             $tableOptions = 'CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE=InnoDB';
         }
+        
+        $this->createTable('{{%language}}', [
+            'id' => $this->primaryKey(),
+            'url' => $this->string(2)->notNull(),
+            'local' => $this->string(5)->notNull(),
+            'name' => $this->string(15)->notNull(),
+        ], $tableOptions);
 
         $this->createTable('{{%post}}', [
             'id' => $this->primaryKey(),
@@ -89,10 +96,7 @@ class Post extends \yii\db\ActiveRecord
         return [
             'multilingual' => [
                 'class' => MultilingualBehavior::className(),
-                'languages' => [
-                    'en-US' => 'English',
-                    'es' => 'Español',
-                ],
+                'languageClassName' => Language::className(),
                 'attributes' => [
                     'title', 'content',
                 ]
@@ -174,7 +178,7 @@ Attributes
 Attribute | Description
 ----------|------------
 **attributes** | List of multilingual attributes
-**languages** | List of available languages. It can be a simple array: ```['en-US', 'es']``` or an associative array: ```['en-US' => 'English', 'es' => 'Español']```. You can specify `languages` either in the behavior or in application's parameters.
+**languageClassName** | The name of language model class.
 tableName | The name of the translation table. If `tableName` is not set `$owner->tableName()` + `tableNameSuffix` will be used as `tableName`.
 tableNameSuffix | Translation table name suffix. Is used to generate translation table name when `tableName` is not set. Default: `_lang`.
 languageField | The name of the language field of the translation table. Default: `language`.

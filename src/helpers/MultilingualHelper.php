@@ -3,6 +3,7 @@
 namespace h0rseduck\multilingual\helpers;
 
 use Yii;
+use yii\db\ActiveRecord;
 use yii\helpers\Inflector;
 use yii\base\InvalidConfigException;
 
@@ -13,25 +14,30 @@ use yii\base\InvalidConfigException;
 class MultilingualHelper
 {
     /**
+     * @var array
+     */
+    private static $_languages;
+
+    /**
      * Validates and returns list of languages.
      *
-     * @param array $languages
-     * @param \yii\base\Object $owner
+     * @param LanguageModelTrait $owner
      * @return array
      * @throws InvalidConfigException
      */
-    public static function getLanguages($languages, $owner)
+    public static function getLanguages($owner)
     {
-        if (!$languages && isset(Yii::$app->params['languages'])) {
-            $languages = Yii::$app->params['languages'];
+        if(!$owner->languageClassName) {
+            throw new InvalidConfigException('languageClassName can not be empty!');
         }
-
-        if (!is_array($languages) || empty($languages)) {
-            throw new InvalidConfigException('Please specify array of available languages in the '
-                . get_class($owner) . ' or in the application parameters');
+        $language = new $owner->languageClassName;
+        if(!($language instanceof ActiveRecord)) {
+            throw new InvalidConfigException('languageClassName not instance of ActiveRecord!');
         }
-
-        return $languages;
+        if (!self::$_languages) {
+            self::$_languages = $language::find()->asArray()->all();
+        }
+        return self::$_languages;
     }
 
     /**
