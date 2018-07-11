@@ -1,20 +1,28 @@
 <?php
 
-namespace yeesoft\multilingual\containers;
+namespace h0rseduck\multilingual\containers;
 
-use yii\base\Object;
-use yeesoft\multilingual\helpers\MultilingualHelper;
+use h0rseduck\multilingual\helpers\MultilingualHelper;
+use yii\base\BaseObject;
 
-class MultilingualFieldContainer extends Object
+/**
+ * Class MultilingualFieldContainer
+ * @package h0rseduck\multilingual\containers
+ */
+class MultilingualFieldContainer extends BaseObject
 {
-
     /**
      * Fields.
-     * 
-     * @var array 
+     *
+     * @var array
      */
     public $fields;
 
+    /**
+     * @param $method
+     * @param $arguments
+     * @return string
+     */
     public function __call($method, $arguments)
     {
         $_html = '';
@@ -27,7 +35,7 @@ class MultilingualFieldContainer extends Object
 
     /**
      * Updates id for multilingual inputs with custom id.
-     * 
+     *
      * @param string $method
      * @param array $arguments
      * @param mixed $field
@@ -49,5 +57,4 @@ class MultilingualFieldContainer extends Object
 
         return $arguments;
     }
-
 }

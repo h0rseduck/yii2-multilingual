@@ -1,17 +1,15 @@
 <?php
 
-namespace yeesoft\multilingual\db;
+namespace h0rseduck\multilingual\db;
 
 /**
  * Multilingual attribute labels trait.
- * 
+ *
  * Modifies `getAttributeLabel` method to support multilingual attribute labels.
  */
 trait MultilingualLabelsTrait
 {
-
     /**
-     * 
      * @inheritdoc
      */
     public function getAttributeLabel($attribute)
@@ -22,5 +20,4 @@ trait MultilingualLabelsTrait
             return parent::getAttributeLabel($attribute);
         }
     }
-
 }

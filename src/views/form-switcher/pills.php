@@ -1,11 +1,12 @@
 <?php
 
 use yii\helpers\Html;
-use yeesoft\multilingual\assets\FormLanguageSwitcherAsset;
+use h0rseduck\multilingual\assets\FormLanguageSwitcherAsset;
 
 /* @var $this yii\web\View */
 
 FormLanguageSwitcherAsset::register($this);
+
 ?>
 <?php if (count($languages) > 1): ?>
     <ul class="nav nav-pills form-language-switcher">

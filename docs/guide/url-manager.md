@@ -17,7 +17,7 @@ in your application configuration. This is an example of configuration:
 
     'components' => [
         'urlManager' => [
-            'class' => 'yeesoft\multilingual\web\MultilingualUrlManager',
+            'class' => 'h0rseduck\multilingual\web\MultilingualUrlManager',
             'showScriptName' => false,
             'enablePrettyUrl' => true,
             'rules' => [
@@ -63,7 +63,7 @@ forms, widgets and URL manager.
 ```php
 <?php
 
-    use yeesoft\multilingual\widgets\LanguageSwitcher;
+    use h0rseduck\multilingual\widgets\LanguageSwitcher;
 
     echo LanguageSwitcher::widget([
         'languages' => [

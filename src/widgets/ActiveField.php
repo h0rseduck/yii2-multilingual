@@ -1,10 +1,10 @@
 <?php
 
-namespace yeesoft\multilingual\widgets;
+namespace h0rseduck\multilingual\widgets;
 
 use Yii;
-use yeesoft\multilingual\helpers\MultilingualHelper;
-use yeesoft\multilingual\assets\FormLanguageSwitcherAsset;
+use h0rseduck\multilingual\helpers\MultilingualHelper;
+use h0rseduck\multilingual\assets\FormLanguageSwitcherAsset;
 
 /**
  * @inheritdoc
@@ -14,23 +14,23 @@ class ActiveField extends \yii\bootstrap\ActiveField
 
     /**
      * Language of the field.
-     * 
-     * @var string 
+     *
+     * @var string
      */
     public $language;
-    
+
     /**
      * List of languages of the field. For static multilingual fields.
-     * 
-     * @var string 
+     *
+     * @var string
      */
     public $languages;
 
     /**
      * Whether is field multilingual. Use this option to mark an attribute as multilingual
      * in dynamic models.
-     * 
-     * @var bool 
+     *
+     * @var bool
      */
     public $multilingual = false;
 
@@ -55,5 +55,4 @@ class ActiveField extends \yii\bootstrap\ActiveField
             ]);
         }
     }
-
 }

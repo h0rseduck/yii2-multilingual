@@ -2,11 +2,12 @@
 
 use yii\helpers\Html;
 use yii\helpers\ArrayHelper;
-use yeesoft\multilingual\assets\LanguageSwitcherAsset;
+use h0rseduck\multilingual\assets\LanguageSwitcherAsset;
 
 /* @var $this yii\web\View */
 
 LanguageSwitcherAsset::register($this);
+
 ?>
 
 <div class="language-switcher language-switcher-links">

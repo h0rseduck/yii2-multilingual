@@ -1,13 +1,16 @@
 <?php
 
-namespace yeesoft\multilingual\behaviors;
+namespace h0rseduck\multilingual\behaviors;
 
 use yii\base\UnknownPropertyException;
-use yeesoft\multilingual\helpers\MultilingualHelper;
+use h0rseduck\multilingual\helpers\MultilingualHelper;
 
+/**
+ * Trait MultilingualBehaviorTrait
+ * @package h0rseduck\multilingual\behaviors
+ */
 trait MultilingualBehaviorTrait
 {
-
     /**
      * @inheritdoc
      */
@@ -34,8 +37,7 @@ trait MultilingualBehaviorTrait
         } catch (UnknownPropertyException $e) {
             if ($this->hasMultilingualAttribute($name)) {
                 return $this->getMultilingualAttribute($name);
-            }
-            // @codeCoverageIgnoreStart
+            } // @codeCoverageIgnoreStart
             else {
                 throw $e;
             }
@@ -53,8 +55,7 @@ trait MultilingualBehaviorTrait
         } catch (UnknownPropertyException $e) {
             if ($this->hasMultilingualAttribute($name)) {
                 $this->setMultilingualAttribute($name, $value);
-            }
-            // @codeCoverageIgnoreStart
+            } // @codeCoverageIgnoreStart
             else {
                 throw $e;
             }
@@ -77,7 +78,7 @@ trait MultilingualBehaviorTrait
 
     /**
      * Whether is attribute multilingual.
-     * 
+     *
      * @param string $attribute
      * @return bool
      */
@@ -126,7 +127,7 @@ trait MultilingualBehaviorTrait
 
     /**
      * Return multilingual attribute label.
-     * 
+     *
      * @param string $attribute
      * @return string
      */
@@ -173,5 +174,4 @@ trait MultilingualBehaviorTrait
     {
         return MultilingualHelper::getAttributeName($attribute, $language);
     }
-
 }

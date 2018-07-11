@@ -6,13 +6,13 @@ Preferred way to install this extension is through [composer](http://getcomposer
 - Either run
 
 ```
-composer require --prefer-dist yeesoft/yii2-multilingual "~1.0.0"
+composer require --prefer-dist h0rseduck/yii2-multilingual "~1.0.0"
 ```
 
 or add
 
 ```
-"yeesoft/yii2-multilingual": "~1.0.0"
+"h0rseduck/yii2-multilingual": "~1.0.0"
 ```
 
 to the require section of your `composer.json` file.

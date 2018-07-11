@@ -1,10 +1,9 @@
 <?php
 
-namespace yeesoft\multilingual\widgets;
+namespace h0rseduck\multilingual\widgets;
 
 use Yii;
-use yeesoft\multilingual\widgets\FormLanguageSwitcher;
-use yeesoft\multilingual\containers\MultilingualFieldContainer;
+use h0rseduck\multilingual\containers\MultilingualFieldContainer;
 
 /**
  * Multilingual ActiveForm
@@ -14,13 +13,13 @@ class ActiveForm extends \yii\bootstrap\ActiveForm
     /**
      * @var string the default field class name when calling [[field()]] to create a new field.
      */
-    public $fieldClass = 'yeesoft\multilingual\widgets\ActiveField';
+    public $fieldClass = 'h0rseduck\multilingual\widgets\ActiveField';
 
     /**
      * 
      * @param \yii\base\Model $model
-     * @param type $attribute
-     * @param type $options
+     * @param string $attribute
+     * @param array $options
      * @return MultilingualFieldContainer
      */
     public function field($model, $attribute, $options = [])

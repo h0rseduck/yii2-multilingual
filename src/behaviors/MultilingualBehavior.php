@@ -1,6 +1,6 @@
 <?php
 
-namespace yeesoft\multilingual\behaviors;
+namespace h0rseduck\multilingual\behaviors;
 
 use Yii;
 use yii\base\Behavior;
@@ -9,24 +9,27 @@ use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\validators\Validator;
-use yeesoft\multilingual\helpers\MultilingualHelper;
+use h0rseduck\multilingual\helpers\MultilingualHelper;
 
+/**
+ * Class MultilingualBehavior
+ * @package h0rseduck\multilingual\behaviors
+ */
 class MultilingualBehavior extends Behavior
 {
-
     use MultilingualBehaviorTrait;
-    
+
     /**
      * List of multilingual attributes.
-     * 
+     *
      * @var array
      */
     public $attributes;
 
     /**
-     * Available languages. It can be a simple array ['en-US', 'es'] or an associative 
+     * Available languages. It can be a simple array ['en-US', 'es'] or an associative
      * array ['en-US' => 'English', 'es' => 'Español'].
-     * 
+     *
      * @var array
      */
     public $languages;
@@ -53,11 +56,11 @@ class MultilingualBehavior extends Behavior
     public $languageForeignKey = 'owner_id';
 
     /**
-     * The name of translation model class. If this value is empty translation model 
-     * class will be dynamically created using of the `eval()` function. No additional 
+     * The name of translation model class. If this value is empty translation model
+     * class will be dynamically created using of the `eval()` function. No additional
      * files are required.
-     * 
-     * @var string 
+     *
+     * @var string
      */
     public $translationClassName;
 
@@ -74,10 +77,10 @@ class MultilingualBehavior extends Behavior
     public $requireTranslations = true;
 
     /**
-     * Multilingual attribute label pattern. Available variables: `{label}` - original 
+     * Multilingual attribute label pattern. Available variables: `{label}` - original
      * attribute label, `{language}` - language name, `{code}` - language code.
-     * 
-     * @var string 
+     *
+     * @var string
      */
     public $attributeLabelPattern = '{label} [{language}]';
 
@@ -232,7 +235,7 @@ class MultilingualBehavior extends Behavior
 
     /**
      * Generate translation table name.
-     * 
+     *
      * @param ActiveRecord $ownerTableName
      * @param string $tableNameSuffix
      * @return string
@@ -264,7 +267,7 @@ class MultilingualBehavior extends Behavior
     {
         $language = $language ?: $this->_currentLanguage;
         return $this->owner->hasOne($this->translationClassName, [$this->languageForeignKey => $this->_ownerPrimaryKey])
-                        ->where([$this->languageField => $language]);
+            ->where([$this->languageField => $language]);
     }
 
     /**
@@ -433,5 +436,4 @@ class MultilingualBehavior extends Behavior
     {
         return substr($className, strrpos($className, '\\') + 1);
     }
-
 }

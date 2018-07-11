@@ -1,13 +1,17 @@
 <?php
 
-namespace yeesoft\multilingual\web;
+namespace h0rseduck\multilingual\web;
 
 use Yii;
 use yii\web\UrlManager;
 use yii\web\Application;
 use yii\web\NotFoundHttpException;
-use yeesoft\multilingual\helpers\MultilingualHelper;
+use h0rseduck\multilingual\helpers\MultilingualHelper;
 
+/**
+ * Class MultilingualUrlManager
+ * @package h0rseduck\multilingual\web
+ */
 class MultilingualUrlManager extends UrlManager
 {
 
@@ -179,5 +183,4 @@ class MultilingualUrlManager extends UrlManager
 
         return $sourceLanguage;
     }
-
 }

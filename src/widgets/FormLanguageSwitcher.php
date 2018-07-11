@@ -1,6 +1,6 @@
 <?php
 
-namespace yeesoft\multilingual\widgets;
+namespace h0rseduck\multilingual\widgets;
 
 use Yii;
 
@@ -9,17 +9,15 @@ use Yii;
  */
 class FormLanguageSwitcher extends \yii\base\Widget
 {
-
     /**
-     *
      * @var string view file
      */
     public $view;
 
     /**
      * List of languages.
-     * 
-     * @var array 
+     *
+     * @var array
      */
     public $languages;
 
@@ -27,8 +25,11 @@ class FormLanguageSwitcher extends \yii\base\Widget
      *
      * @var string default view file
      */
-    private $_defaultView = '@vendor/yeesoft/yii2-multilingual/src/views/form-switcher/pills';
+    private $_defaultView = '@vendor/h0rseduck/yii2-multilingual/src/views/form-switcher/pills';
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         $this->view = $this->view ?: $this->_defaultView;
@@ -36,14 +37,17 @@ class FormLanguageSwitcher extends \yii\base\Widget
         parent::init();
     }
 
+    /**
+     * @inheritdoc
+     */
     public function run()
     {
         if ($this->languages) {
             return $this->render($this->view, [
-                        'language' => Yii::$app->language,
-                        'languages' => $this->languages,
+                'language' => Yii::$app->language,
+                'languages' => $this->languages,
             ]);
         }
+        return null;
     }
-
 }

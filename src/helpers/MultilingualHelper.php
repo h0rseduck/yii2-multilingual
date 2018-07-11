@@ -1,17 +1,20 @@
 <?php
 
-namespace yeesoft\multilingual\helpers;
+namespace h0rseduck\multilingual\helpers;
 
 use Yii;
 use yii\helpers\Inflector;
 use yii\base\InvalidConfigException;
 
+/**
+ * Class MultilingualHelper
+ * @package h0rseduck\multilingual\helpers
+ */
 class MultilingualHelper
 {
-
     /**
      * Validates and returns list of languages.
-     * 
+     *
      * @param array $languages
      * @param \yii\base\Object $owner
      * @return array
@@ -25,7 +28,7 @@ class MultilingualHelper
 
         if (!is_array($languages) || empty($languages)) {
             throw new InvalidConfigException('Please specify array of available languages in the '
-            . get_class($owner) . ' or in the application parameters');
+                . get_class($owner) . ' or in the application parameters');
         }
 
         return $languages;
@@ -33,7 +36,7 @@ class MultilingualHelper
 
     /**
      * Validates and returns list of language redirects.
-     * 
+     *
      * @param array $languageRedirects
      * @return array
      */
@@ -48,7 +51,7 @@ class MultilingualHelper
 
     /**
      * Returns code of language by its redirect language code.
-     * 
+     *
      * @param string $redirectLanguageCode
      * @param array $redirects
      * @return string
@@ -69,7 +72,7 @@ class MultilingualHelper
 
     /**
      * Returns list of languages with applied language redirects.
-     * 
+     *
      * @param array $languages
      * @param array $languageRedirects
      * @return array
@@ -85,7 +88,7 @@ class MultilingualHelper
 
     /**
      * Returns language code that will be displayed on front-end.
-     * 
+     *
      * @param string $language
      * @return string
      */
@@ -93,10 +96,10 @@ class MultilingualHelper
     {
         return (isset($languageRedirects[$language])) ? $languageRedirects[$language] : $language;
     }
-    
+
     /**
      * Updates attribute name to multilingual.
-     * 
+     *
      * @param string $attribute
      * @param string $language
      * @return string
@@ -105,5 +108,4 @@ class MultilingualHelper
     {
         return $attribute . "_" . Inflector::camel2id(Inflector::id2camel($language), "_");
     }
-
 }

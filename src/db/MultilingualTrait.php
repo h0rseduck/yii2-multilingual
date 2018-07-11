@@ -1,11 +1,12 @@
 <?php
-namespace yeesoft\multilingual\db;
+
+namespace h0rseduck\multilingual\db;
 
 use Yii;
 
 /**
  * Multilingual trait.
- * 
+ *
  * Modify ActiveRecord query for multilingual support.
  */
 trait MultilingualTrait
@@ -17,17 +18,16 @@ trait MultilingualTrait
 
     /**
      * Scope for querying by languages.
-     * 
+     *
      * @param $language
-     * @param $abridge
      * @return $this
      */
     public function localized($language = null)
     {
-        if (!$language){
+        if (!$language) {
             $language = Yii::$app->language;
         }
-            
+
         if (!isset($this->with['translations'])) {
             $this->with(['translation' => function ($query) use ($language) {
                 $query->where([$this->languageField => $language]);

@@ -1,30 +1,33 @@
 <?php
 
-namespace yeesoft\multilingual\widgets;
+namespace h0rseduck\multilingual\widgets;
 
 use Yii;
 use yii\helpers\ArrayHelper;
-use yeesoft\multilingual\helpers\MultilingualHelper;
+use h0rseduck\multilingual\helpers\MultilingualHelper;
 
+/**
+ * Class LanguageSwitcher
+ * @package h0rseduck\multilingual\widgets
+ */
 class LanguageSwitcher extends \yii\base\Widget
 {
-
     const VIEW_LINKS = 'links';
     const VIEW_PILLS = 'pills';
     const DISPLAY_CODE = 'code';
     const DISPLAY_TITLE = 'title';
 
     /**
-     * Available languages. It can be a simple array ['en-US', 'es'] or an associative 
+     * Available languages. It can be a simple array ['en-US', 'es'] or an associative
      * array ['en-US' => 'English', 'es' => 'Español'].
-     * 
+     *
      * @var array
      */
     public $languages;
 
     /**
      * @var array List of language redirects.
-     * 
+     *
      * For example,
      *
      * ```php
@@ -52,13 +55,16 @@ class LanguageSwitcher extends \yii\base\Widget
     protected $_currentLanguage;
 
     /**
-     * @var array default views of switcher. 
+     * @var array default views of switcher.
      */
     protected $_reservedViews = [
-        'links' => '@vendor/yeesoft/yii2-multilingual/src/views/switcher/links',
-        'pills' => '@vendor/yeesoft/yii2-multilingual/src/views/switcher/pills',
+        'links' => '@vendor/h0rseduck/yii2-multilingual/src/views/switcher/links',
+        'pills' => '@vendor/h0rseduck/yii2-multilingual/src/views/switcher/pills',
     ];
 
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         parent::init();
@@ -68,6 +74,9 @@ class LanguageSwitcher extends \yii\base\Widget
         $this->languageRedirects = MultilingualHelper::getLanguageRedirects($this->languageRedirects);
     }
 
+    /**
+     * @inheritdoc
+     */
     public function run()
     {
         if (count($this->languages) > 1) {
@@ -77,13 +86,13 @@ class LanguageSwitcher extends \yii\base\Widget
             $url = isset($params['route']) ? $params['route'] : $route;
 
             return $this->render($view, [
-                        'url' => $url,
-                        'params' => $params,
-                        'display' => $this->display,
-                        'language' => MultilingualHelper::getDisplayLanguageCode($this->_currentLanguage, $this->languageRedirects),
-                        'languages' => MultilingualHelper::getDisplayLanguages($this->languages, $this->languageRedirects),
+                'url' => $url,
+                'params' => $params,
+                'display' => $this->display,
+                'language' => MultilingualHelper::getDisplayLanguageCode($this->_currentLanguage, $this->languageRedirects),
+                'languages' => MultilingualHelper::getDisplayLanguages($this->languages, $this->languageRedirects),
             ]);
         }
+        return null;
     }
-
 }
