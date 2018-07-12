@@ -265,7 +265,7 @@ class MultilingualBehavior extends Behavior
      */
     public function getTranslation($language_id = null)
     {
-        $language_id = $language_id ?: $this->_currentLanguage->getPrimaryKey();
+        $language_id = $language_id ?: $this->_currentLanguage['id'];
         return $this->owner->hasOne($this->translationClassName, [$this->languageForeignKey => $this->_ownerPrimaryKey])
             ->where([$this->languageField => $language_id]);
     }
