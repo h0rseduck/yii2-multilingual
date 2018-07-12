@@ -2,7 +2,7 @@
 
 namespace h0rseduck\multilingual\widgets;
 
-use h0rseduck\multilingual\helpers\LanguageModelTrait;
+use h0rseduck\multilingual\components\LanguageManager;
 use Yii;
 use yii\helpers\ArrayHelper;
 use h0rseduck\multilingual\helpers\MultilingualHelper;
@@ -13,12 +13,15 @@ use h0rseduck\multilingual\helpers\MultilingualHelper;
  */
 class LanguageSwitcher extends \yii\base\Widget
 {
-    use LanguageModelTrait;
-
     const VIEW_LINKS = 'links';
     const VIEW_PILLS = 'pills';
     const DISPLAY_CODE = 'code';
     const DISPLAY_TITLE = 'title';
+
+    /**
+     * @var LanguageManager
+     */
+    public $languageComponent;
 
     /**
      * @var array List of language redirects.
@@ -64,8 +67,8 @@ class LanguageSwitcher extends \yii\base\Widget
     {
         parent::init();
 
-        $this->_currentLanguage = Yii::$app->language;
-        $this->languages = MultilingualHelper::getLanguages($this);
+        $this->_currentLanguage = $this->languageComponent->getCurrentLanguage();
+        $this->languages = $this->languageComponent->getLanguages();
         $this->languageRedirects = MultilingualHelper::getLanguageRedirects($this->languageRedirects);
     }
 

@@ -2,7 +2,7 @@
 
 namespace h0rseduck\multilingual\web;
 
-use h0rseduck\multilingual\helpers\LanguageModelTrait;
+use h0rseduck\multilingual\components\LanguageManager;
 use Yii;
 use yii\web\UrlManager;
 use yii\web\Application;
@@ -15,7 +15,10 @@ use h0rseduck\multilingual\helpers\MultilingualHelper;
  */
 class MultilingualUrlManager extends UrlManager
 {
-    use LanguageModelTrait;
+    /**
+     * @var LanguageManager
+     */
+    public $languageComponent;
 
     /**
      * @var array List of language code redirects.
@@ -68,7 +71,7 @@ class MultilingualUrlManager extends UrlManager
     {
         parent::init();
 
-        $this->languages = MultilingualHelper::getLanguages($this);
+        $this->languages = $this->languageComponent->getLanguages();
         $this->languageRedirects = MultilingualHelper::getLanguageRedirects($this->languageRedirects);
 
         Yii::$app->on(Application::EVENT_BEFORE_ACTION, [$this, 'beforeAction']);

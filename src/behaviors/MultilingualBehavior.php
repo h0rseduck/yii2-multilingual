@@ -2,17 +2,14 @@
 
 namespace h0rseduck\multilingual\behaviors;
 
-use h0rseduck\multilingual\helpers\LanguageModelTrait;
+use h0rseduck\multilingual\components\LanguageManager;
 use Yii;
 use yii\base\Behavior;
-use yii\base\InvalidValueException;
-use yii\base\UnknownPropertyException;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\helpers\ArrayHelper;
 use yii\validators\Validator;
-use h0rseduck\multilingual\helpers\MultilingualHelper;
 
 /**
  * Class MultilingualBehavior
@@ -20,7 +17,7 @@ use h0rseduck\multilingual\helpers\MultilingualHelper;
  */
 class MultilingualBehavior extends Behavior
 {
-    use MultilingualBehaviorTrait, LanguageModelTrait;
+    use MultilingualBehaviorTrait;
 
     /**
      * List of multilingual attributes.
@@ -49,6 +46,11 @@ class MultilingualBehavior extends Behavior
      * @var string the name of the foreign key field of the translation table related to base model table.
      */
     public $languageForeignKey = 'owner_id';
+
+    /**
+     * @var string the name of language component
+     */
+    public $languageComponentName = 'languageManager';
 
     /**
      * The name of translation model class. If this value is empty translation model
@@ -93,6 +95,11 @@ class MultilingualBehavior extends Behavior
      * Default to true.
      */
     public $forceDelete = true;
+
+    /**
+     * @var LanguageManager
+     */
+    public $languageComponent;
 
     /**
      * @var ActiveRecord current language.
@@ -159,18 +166,10 @@ class MultilingualBehavior extends Behavior
         if (empty($this->attributes) || !is_array($this->attributes)) {
             throw new InvalidConfigException('Please specify multilingual attributes for the ' . get_class($this) . ' in the ' . get_class($this->owner));
         }
-
-        $this->_languages = MultilingualHelper::getLanguages($this);
-
-        /** @var ActiveRecord $language */
-        $language = new $this->languageClassName;
-        $language = $language::find()->where([$this->languageModelFieldCode => Yii::$app->language])->asArray()->one();
-        if(!$language) {
-            throw new InvalidValueException('Language not found!');
-        }
-        $this->_currentLanguage = $language;
-
-        $this->_languageKeys = ArrayHelper::map($this->_languages, $this->languageModelFieldCode, 'id');
+        $this->languageComponent = Yii::$app->{$this->languageComponentName};
+        $this->_languages = $this->languageComponent->getLanguages();
+        $this->_currentLanguage = $this->languageComponent->getCurrentLanguage();
+        $this->_languageKeys = ArrayHelper::map($this->_languages, $this->languageComponent->modelFieldCode, 'id');
 
         if (!$this->tableName) {
             $this->tableName = $this->generateTableName($owner->tableName(), $this->tableNameSuffix);
@@ -285,7 +284,8 @@ class MultilingualBehavior extends Behavior
     public function beforeValidate()
     {
         foreach ($this->attributes as $attribute) {
-            $this->setMultilingualAttribute($this->getAttributeName($attribute, $this->_currentLanguage[$this->languageModelFieldCode]), $this->getMultilingualAttribute($attribute));
+            $language = $this->_currentLanguage[$this->languageComponent->modelFieldCode];
+            $this->setMultilingualAttribute($this->getAttributeName($attribute, $language), $this->getMultilingualAttribute($attribute));
         }
     }
 

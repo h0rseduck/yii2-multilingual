@@ -36,7 +36,7 @@ class ActiveForm extends \yii\bootstrap\ActiveForm
             if($multilingualAttribute){
                 /** @var MultilingualBehavior $behavior */
                 $behavior = $model->getBehavior('multilingual');
-                $languages = ArrayHelper::getColumn($behavior->getLanguages(), $behavior->languageModelFieldCode);
+                $languages = ArrayHelper::getColumn($behavior->getLanguages(), $behavior->languageComponent->modelFieldCode);
             } else {
                 $languages = (!empty($options['languages'])) ? array_keys($options['languages']) : [Yii::$app->language];
             }
@@ -64,9 +64,12 @@ class ActiveForm extends \yii\bootstrap\ActiveForm
         $languages = [];
         if($behavior = $model->getBehavior('multilingual')) {
             /** @var MultilingualBehavior $behavior */
-            $languages = ArrayHelper::map($behavior->getLanguages(), $behavior->languageModelFieldCode, $behavior->languageModelFieldTitle);
+            $languages = ArrayHelper::map(
+                $behavior->getLanguages(),
+                $behavior->languageComponent->modelFieldCode,
+                $behavior->languageComponent->modelFieldTitle
+            );
         }
-        
         return FormLanguageSwitcher::widget(['languages' => $languages, 'view' => $view]);
     }
 }

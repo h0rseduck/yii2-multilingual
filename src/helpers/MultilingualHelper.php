@@ -14,33 +14,6 @@ use yii\base\InvalidConfigException;
 class MultilingualHelper
 {
     /**
-     * @var array
-     */
-    private static $_languages;
-
-    /**
-     * Validates and returns list of languages.
-     *
-     * @param LanguageModelTrait $owner
-     * @return array
-     * @throws InvalidConfigException
-     */
-    public static function getLanguages($owner)
-    {
-        if(!$owner->languageClassName) {
-            throw new InvalidConfigException('languageClassName can not be empty!');
-        }
-        $language = new $owner->languageClassName;
-        if(!($language instanceof ActiveRecord)) {
-            throw new InvalidConfigException('languageClassName not instance of ActiveRecord!');
-        }
-        if (!self::$_languages) {
-            self::$_languages = $language::find()->asArray()->all();
-        }
-        return self::$_languages;
-    }
-
-    /**
      * Validates and returns list of language redirects.
      *
      * @param array $languageRedirects
