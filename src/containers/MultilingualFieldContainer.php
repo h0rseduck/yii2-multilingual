@@ -4,6 +4,7 @@ namespace h0rseduck\multilingual\containers;
 
 use h0rseduck\multilingual\helpers\MultilingualHelper;
 use yii\base\BaseObject;
+use yii\bootstrap\ActiveField;
 
 /**
  * Class MultilingualFieldContainer
@@ -13,8 +14,7 @@ class MultilingualFieldContainer extends BaseObject
 {
     /**
      * Fields.
-     *
-     * @var array
+     * @var ActiveField[]
      */
     public $fields;
 
@@ -25,12 +25,35 @@ class MultilingualFieldContainer extends BaseObject
      */
     public function __call($method, $arguments)
     {
-        $_html = '';
-        foreach ($this->fields as $field) {
-            $_html .= call_user_func_array(array($field, $method), $this->updateArguments($method, $arguments, $field));
+        foreach ($this->fields as &$field) {
+            $field = call_user_func_array(array($field, $method), $this->updateArguments($method, $arguments, $field));
         }
+        return $this;
+    }
 
-        return $_html;
+    /**
+     * @return string
+     */
+    public function __toString()
+    {
+        $html = '';
+        foreach ($this->fields as $field) {
+            $html .= (string)$field;
+        }
+        return $html;
+    }
+
+    /**
+     * @param null|string $label
+     * @return $this
+     */
+    public function label($label = null)
+    {
+        foreach ($this->fields as $field) {
+            $language = ucfirst($field->language);
+            $field->label("{$label} {$language}");
+        }
+        return $this;
     }
 
     /**
