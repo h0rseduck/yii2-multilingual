@@ -24,20 +24,6 @@ class LanguageSwitcher extends \yii\base\Widget
     public $languageComponent;
 
     /**
-     * @var array List of language redirects.
-     *
-     * For example,
-     *
-     * ```php
-     * [
-     *   'en-US' => 'en',
-     *   'pt-BR' => 'pt',
-     * ]
-     * ```
-     */
-    public $languageRedirects;
-
-    /**
      * @var string View file of switcher. Could be `links`, `pills` or custom view.
      */
     public $view = self::VIEW_PILLS;
@@ -66,10 +52,8 @@ class LanguageSwitcher extends \yii\base\Widget
     public function init()
     {
         parent::init();
-
         $this->_currentLanguage = $this->languageComponent->getCurrentLanguage();
         $this->languages = $this->languageComponent->getLanguages();
-        $this->languageRedirects = MultilingualHelper::getLanguageRedirects($this->languageRedirects);
     }
 
     /**
@@ -87,8 +71,8 @@ class LanguageSwitcher extends \yii\base\Widget
                 'url' => $url,
                 'params' => $params,
                 'display' => $this->display,
-                'language' => MultilingualHelper::getDisplayLanguageCode($this->_currentLanguage, $this->languageRedirects),
-                'languages' => MultilingualHelper::getDisplayLanguages($this->languages, $this->languageRedirects),
+                'language' => $this->_currentLanguage,
+                'languages' => $this->languages,
             ]);
         }
         return null;

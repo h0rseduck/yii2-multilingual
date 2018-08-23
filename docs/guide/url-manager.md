@@ -33,9 +33,6 @@ in your application configuration. This is an example of configuration:
             'languages' => [
                 'en-US' => 'English',
                 'es' => 'Español',
-            ],
-            'languageRedirects' => [
-                'en-US' => 'en',
             ]
         ],
     ]
@@ -69,9 +66,6 @@ forms, widgets and URL manager.
         'languages' => [
             'en-US' => 'English',
             'es' => 'Español',
-        ],
-        'languageRedirects' => [
-            'en-US' => 'en',
         ]
     ]);
 ```

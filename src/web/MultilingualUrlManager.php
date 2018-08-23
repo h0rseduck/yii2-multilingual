@@ -4,6 +4,9 @@ namespace h0rseduck\multilingual\web;
 
 use h0rseduck\multilingual\components\LanguageManager;
 use Yii;
+use yii\base\ActionEvent;
+use yii\base\InvalidConfigException;
+use yii\web\MethodNotAllowedHttpException;
 use yii\web\UrlManager;
 use yii\web\Application;
 use yii\web\NotFoundHttpException;
@@ -19,20 +22,6 @@ class MultilingualUrlManager extends UrlManager
      * @var LanguageManager
      */
     public $languageComponent;
-
-    /**
-     * @var array List of language code redirects.
-     * 
-     * For example,
-     *
-     * ```php
-     * [
-     *   'en-US' => 'en',
-     *   'pt-BR' => 'pt',
-     * ]
-     * ```
-     */
-    public $languageRedirects;
 
     /**
      * List of not multilingual actions. Should contain action id, including 
@@ -60,20 +49,12 @@ class MultilingualUrlManager extends UrlManager
     public $forceLanguageParam = 'forceLanguageParam';
 
     /**
-     * @var string list of languages with applied language redirects.
-     */
-    protected $_displayLanguages;
-
-    /**
      * @inheritdoc
      */
     public function init()
     {
         parent::init();
-
         $this->languages = $this->languageComponent->getLanguages();
-        $this->languageRedirects = MultilingualHelper::getLanguageRedirects($this->languageRedirects);
-
         Yii::$app->on(Application::EVENT_BEFORE_ACTION, [$this, 'beforeAction']);
     }
 
@@ -129,7 +110,7 @@ class MultilingualUrlManager extends UrlManager
         }
 
         if (count($this->languages) > 1) {
-            $languages = array_keys($this->getDisplayLanguages());
+            $languages = array_keys($this->languages);
             //remove incorrect language param
             if (isset($params['language']) && !in_array($params['language'], $languages)) {
                 unset($params['language']);
@@ -146,38 +127,22 @@ class MultilingualUrlManager extends UrlManager
                 if (in_array($language, $languages)) {
                     Yii::$app->language = $language;
                 }
-                $params['language'] = MultilingualHelper::getDisplayLanguageCode(Yii::$app->language, $this->languageRedirects);
+                $params['language'] = Yii::$app->language;
             }
         }
         return parent::createUrl($params);
     }
 
     /**
-     * @return array Returns list of languages with applied language redirects.
-     */
-    protected function getDisplayLanguages()
-    {
-        if (!isset($this->_displayLanguages)) {
-            $this->_displayLanguages = MultilingualHelper::getDisplayLanguages($this->languages, $this->languageRedirects);
-        }
-        return $this->_displayLanguages;
-    }
-
-    /**
-     * Returns code of language by its redirect language code.
-     * 
-     * @param string $redirectLanguageCode
+     * @param string $languageCode
      * @return string
      * @throws NotFoundHttpException
      */
-    protected function getLanguageCode($redirectLanguageCode)
+    protected function getLanguageCode($languageCode)
     {
-        $sourceLanguage = MultilingualHelper::getRedirectedLanguageCode($redirectLanguageCode, $this->languageRedirects);
-
-        if (!isset($this->languages[$sourceLanguage])) {
+        if (!isset($this->languages[$languageCode])) {
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
         }
-
-        return $sourceLanguage;
+        return $languageCode;
     }
 }
