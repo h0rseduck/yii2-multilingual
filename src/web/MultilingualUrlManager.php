@@ -24,6 +24,11 @@ class MultilingualUrlManager extends UrlManager
     public $languageComponent;
 
     /**
+     * @var string the name of language component
+     */
+    public $languageComponentName = 'languageManager';
+
+    /**
      * List of not multilingual actions. Should contain action id, including 
      * controller id and module id (if module is used).
      * 
@@ -54,6 +59,7 @@ class MultilingualUrlManager extends UrlManager
     public function init()
     {
         parent::init();
+        $this->languageComponent = Yii::$app->{$this->languageComponentName};
         $this->languages = $this->languageComponent->getLanguages();
         Yii::$app->on(Application::EVENT_BEFORE_ACTION, [$this, 'beforeAction']);
     }
