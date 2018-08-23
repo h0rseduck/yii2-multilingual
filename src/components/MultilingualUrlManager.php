@@ -22,7 +22,7 @@ class MultilingualUrlManager extends UrlManager
 {
     const SESSION_KEY = 'language';
     const COOKIE_KEY = 'language';
-    const REQUEST_PARAM = 'lang';
+    const REQUEST_PARAM = 'language';
 
     /**
      * @var LanguageManager
