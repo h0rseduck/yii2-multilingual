@@ -1,11 +1,13 @@
 <?php
 
-namespace h0rseduck\multilingual\web;
+namespace h0rseduck\multilingual\components;
 
 use h0rseduck\multilingual\components\LanguageManager;
 use Yii;
 use yii\base\ActionEvent;
 use yii\base\InvalidConfigException;
+use yii\helpers\ArrayHelper;
+use yii\web\Cookie;
 use yii\web\MethodNotAllowedHttpException;
 use yii\web\UrlManager;
 use yii\web\Application;
@@ -18,6 +20,10 @@ use h0rseduck\multilingual\helpers\MultilingualHelper;
  */
 class MultilingualUrlManager extends UrlManager
 {
+    const SESSION_KEY = 'language';
+    const COOKIE_KEY = 'language';
+    const REQUEST_PARAM = 'lang';
+
     /**
      * @var LanguageManager
      */
@@ -29,18 +35,18 @@ class MultilingualUrlManager extends UrlManager
     public $languageComponentName = 'languageManager';
 
     /**
-     * List of not multilingual actions. Should contain action id, including 
+     * List of not multilingual actions. Should contain action id, including
      * controller id and module id (if module is used).
-     * 
+     *
      * For example,
-     * 
+     *
      * ```php
      * [
      *   'site/logout',
      *   'auth/default/oauth2',
      * ]
-     * 
-     * @var array 
+     *
+     * @var array
      */
     public $excludedActions = [];
 
@@ -48,8 +54,8 @@ class MultilingualUrlManager extends UrlManager
      * Name of param that is used to forced including of the language param to the
      * url. Is used for generating links for `excludedActions` in cases when we
      * need include language param to the link. For example in `LanguageSwitcher`.
-     * 
-     * @var string 
+     *
+     * @var string
      */
     public $forceLanguageParam = 'forceLanguageParam';
 
@@ -65,13 +71,18 @@ class MultilingualUrlManager extends UrlManager
     {
         parent::init();
         $this->languageComponent = Yii::$app->{$this->languageComponentName};
-        $this->_languages = $this->languageComponent->getLanguages();
+        $this->_languages = ArrayHelper::map(
+            $this->languageComponent->getLanguages(),
+            $this->languageComponent->modelFieldCode,
+            $this->languageComponent->modelFieldCode
+        );
+        $this->_languages = array_values($this->_languages);
         Yii::$app->on(Application::EVENT_BEFORE_ACTION, [$this, 'beforeAction']);
     }
 
     /**
      * Tracks language parameter for multilingual controllers.
-     * 
+     *
      * @param ActionEvent $event
      * @return bool
      * @throws MethodNotAllowedHttpException|InvalidConfigException when the request method is not allowed.
@@ -79,29 +90,26 @@ class MultilingualUrlManager extends UrlManager
     public function beforeAction($event)
     {
         if (!Yii::$app->errorHandler->exception && count($this->_languages) > 1) {
-
             // Set language by GET request, session or cookie
-            if ($language = Yii::$app->getRequest()->get('language')) {
-
+            if ($language = Yii::$app->getRequest()->get(self::REQUEST_PARAM)) {
                 Yii::$app->language = $this->getLanguageCode($language);
-                Yii::$app->session->set('language', Yii::$app->language);
-                Yii::$app->response->cookies->add(new \yii\web\Cookie([
-                    'name' => 'language',
-                    'value' => Yii::$app->session->get('language'),
+                Yii::$app->session->set(self::SESSION_KEY, Yii::$app->language);
+                /** @var Cookie $cookie */
+                $cookie = Yii::createObject([
+                    'class' => 'yii\web\Cookie',
+                    'name' => self::COOKIE_KEY,
+                    'value' => Yii::$app->session->get(self::SESSION_KEY),
                     'expire' => time() + 31536000 // one year
-                ]));
-            } elseif ($language = Yii::$app->session->get('language')) {
-
+                ]);
+                Yii::$app->response->cookies->add($cookie);
+            } elseif ($language = Yii::$app->session->get(self::SESSION_KEY)) {
                 Yii::$app->language = $this->getLanguageCode($language);
-            } elseif (isset(Yii::$app->request->cookies['language'])) {
-
-                $language = Yii::$app->request->cookies['language']->value;
+            } elseif (isset(Yii::$app->request->cookies[self::COOKIE_KEY])) {
+                $language = Yii::$app->request->cookies[self::COOKIE_KEY]->value;
                 Yii::$app->language = $this->getLanguageCode($language);
             }
-
             Yii::$app->formatter->locale = Yii::$app->language;
         }
-
         return $event->isValid;
     }
 
@@ -114,31 +122,30 @@ class MultilingualUrlManager extends UrlManager
         if ($forceLanguage) {
             unset($params[$this->forceLanguageParam]);
         }
-
-        if (!$forceLanguage && ((isset($params['language']) && $params['language'] === false) || (isset($params[0]) && in_array($params[0], $this->excludedActions)))) {
-            unset($params['language']);
+        if (!$forceLanguage && ((isset($params[self::REQUEST_PARAM]) && $params[self::REQUEST_PARAM] === false) || (isset($params[0])
+                    && in_array($params[0], $this->excludedActions)))) {
+            unset($params[self::REQUEST_PARAM]);
             return parent::createUrl($params);
         }
-
         if (count($this->_languages) > 1) {
             $languages = array_keys($this->_languages);
             //remove incorrect language param
-            if (isset($params['language']) && !in_array($params['language'], $languages)) {
-                unset($params['language']);
+            if (isset($params[self::REQUEST_PARAM]) && !in_array($params[self::REQUEST_PARAM], $languages)) {
+                unset($params[self::REQUEST_PARAM]);
             }
             //trying to get language param
-            if (!isset($params['language'])) {
-                if (Yii::$app->session->has('language')) {
-                    $language = Yii::$app->session->get('language');
-                } elseif (isset(Yii::$app->request->cookies['language'])) {
-                    $language = Yii::$app->request->cookies['language']->value;
+            if (!isset($params[self::REQUEST_PARAM])) {
+                if (Yii::$app->session->has(self::SESSION_KEY)) {
+                    $language = Yii::$app->session->get(self::SESSION_KEY);
+                } elseif (isset(Yii::$app->request->cookies[self::COOKIE_KEY])) {
+                    $language = Yii::$app->request->cookies[self::COOKIE_KEY]->value;
                 } else {
                     $language = Yii::$app->language;
                 }
                 if (in_array($language, $languages)) {
                     Yii::$app->language = $language;
                 }
-                $params['language'] = Yii::$app->language;
+                $params[self::REQUEST_PARAM] = Yii::$app->language;
             }
         }
         return parent::createUrl($params);
@@ -151,7 +158,7 @@ class MultilingualUrlManager extends UrlManager
      */
     protected function getLanguageCode($languageCode)
     {
-        if (!isset($this->_languages[$languageCode])) {
+        if (!in_array($languageCode, $this->_languages)) {
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
         }
         return $languageCode;
