@@ -54,13 +54,18 @@ class MultilingualUrlManager extends UrlManager
     public $forceLanguageParam = 'forceLanguageParam';
 
     /**
+     * @var array languages
+     */
+    private $_languages;
+
+    /**
      * @inheritdoc
      */
     public function init()
     {
         parent::init();
         $this->languageComponent = Yii::$app->{$this->languageComponentName};
-        $this->languages = $this->languageComponent->getLanguages();
+        $this->_languages = $this->languageComponent->getLanguages();
         Yii::$app->on(Application::EVENT_BEFORE_ACTION, [$this, 'beforeAction']);
     }
 
@@ -73,7 +78,7 @@ class MultilingualUrlManager extends UrlManager
      */
     public function beforeAction($event)
     {
-        if (!Yii::$app->errorHandler->exception && count($this->languages) > 1) {
+        if (!Yii::$app->errorHandler->exception && count($this->_languages) > 1) {
 
             // Set language by GET request, session or cookie
             if ($language = Yii::$app->getRequest()->get('language')) {
@@ -115,8 +120,8 @@ class MultilingualUrlManager extends UrlManager
             return parent::createUrl($params);
         }
 
-        if (count($this->languages) > 1) {
-            $languages = array_keys($this->languages);
+        if (count($this->_languages) > 1) {
+            $languages = array_keys($this->_languages);
             //remove incorrect language param
             if (isset($params['language']) && !in_array($params['language'], $languages)) {
                 unset($params['language']);
@@ -146,7 +151,7 @@ class MultilingualUrlManager extends UrlManager
      */
     protected function getLanguageCode($languageCode)
     {
-        if (!isset($this->languages[$languageCode])) {
+        if (!isset($this->_languages[$languageCode])) {
             throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
         }
         return $languageCode;
