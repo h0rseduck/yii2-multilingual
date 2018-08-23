@@ -3,11 +3,8 @@
 namespace h0rseduck\multilingual\widgets;
 
 use h0rseduck\multilingual\components\LanguageManager;
-use h0rseduck\multilingual\components\MultilingualUrlManager;
 use Yii;
 use yii\helpers\ArrayHelper;
-use h0rseduck\multilingual\helpers\MultilingualHelper;
-use yii\helpers\Html;
 
 /**
  * Class LanguageSwitcher
@@ -15,11 +12,6 @@ use yii\helpers\Html;
  */
 class LanguageSwitcher extends \yii\base\Widget
 {
-    const VIEW_LINKS = 'links';
-    const VIEW_PILLS = 'pills';
-    const DISPLAY_CODE = 'code';
-    const DISPLAY_TITLE = 'title';
-
     /**
      * @var LanguageManager
      */
@@ -31,19 +23,15 @@ class LanguageSwitcher extends \yii\base\Widget
     public $languageComponentName = 'languageManager';
 
     /**
-     * @var string View file of switcher. Could be `links`, `pills` or custom view.
+     * @var string View file
      */
-    public $view = self::VIEW_PILLS;
+    public $view;
 
     /**
-     * @var string  code | title
+     *
+     * @var string default view file
      */
-    public $display = self::DISPLAY_TITLE;
-
-    /**
-     * @var string current language.
-     */
-    protected $_currentLanguage;
+    private $_defaultView = '@vendor/h0rseduck/yii2-multilingual/src/widgets/views/switcher';
 
     /**
      * @var array languages
@@ -51,21 +39,13 @@ class LanguageSwitcher extends \yii\base\Widget
     private $_languages;
 
     /**
-     * @var array default views of switcher.
-     */
-    protected $_reservedViews = [
-        'links' => '@vendor/h0rseduck/yii2-multilingual/src/views/switcher/links',
-        'pills' => '@vendor/h0rseduck/yii2-multilingual/src/views/switcher/pills',
-    ];
-
-    /**
      * @inheritdoc
      */
     public function init()
     {
         parent::init();
+        $this->view = $this->view ?: $this->_defaultView;
         $this->languageComponent = Yii::$app->{$this->languageComponentName};
-        $this->_currentLanguage = $this->languageComponent->getCurrentLanguage();
         $this->_languages = ArrayHelper::map(
             $this->languageComponent->getLanguages(),
             $this->languageComponent->modelFieldCode,
@@ -78,19 +58,35 @@ class LanguageSwitcher extends \yii\base\Widget
      */
     public function run()
     {
-        if (count($this->_languages) > 1) {
-            $view = isset($this->_reservedViews[$this->view]) ? $this->_reservedViews[$this->view] : $this->view;
-            list($route, $params) = Yii::$app->getUrlManager()->parseRequest(Yii::$app->getRequest());
-            $params = ArrayHelper::merge(Yii::$app->getRequest()->get(), $params);
-            $url = isset($params['route']) ? $params['route'] : $route;
-            return $this->render($view, [
-                'url' => $url,
-                'params' => $params,
-                'display' => $this->display,
-                'language' => $this->_currentLanguage,
-                'languages' => $this->_languages,
-            ]);
+        $route = Yii::$app->controller->route;
+        $appLanguage = Yii::$app->language;
+        $params = Yii::$app->getRequest()->getQueryParams();
+        if($route === Yii::$app->errorHandler->errorAction) {
+            return null;
         }
-        return null;
+        array_unshift($params, '/' . $route);
+        $languages = [];
+        foreach ($this->_languages as $language => $languageTitle) {
+            $isWildcard = substr($language, -2) === '-*';
+            if (
+                $language === $appLanguage ||
+                // Also check for wildcard language
+                $isWildcard && substr($appLanguage, 0, 2) === substr($language, 0, 2)
+            ) {
+                continue;   // Exclude the current language
+            }
+            if ($isWildcard) {
+                $language = substr($language, 0, 2);
+            }
+            $params['language'] = $language;
+            $languages[] = [
+                'label' => $languageTitle,
+                'url' => $params,
+            ];
+        }
+
+        return $this->render($this->view, [
+            'languages' => $languages
+        ]);
     }
 }

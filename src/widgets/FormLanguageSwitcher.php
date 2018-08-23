@@ -25,7 +25,7 @@ class FormLanguageSwitcher extends \yii\base\Widget
      *
      * @var string default view file
      */
-    private $_defaultView = '@vendor/h0rseduck/yii2-multilingual/src/views/form-switcher/pills';
+    private $_defaultView = '@vendor/h0rseduck/yii2-multilingual/src/widgets/views/form-switcher';
 
     /**
      * @inheritdoc

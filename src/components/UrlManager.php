@@ -8,7 +8,7 @@ use yii\helpers\ArrayHelper;
  * Class UrlManager
  * @package h0rseduck\multilingual\components
  */
-class UrlManager extends codemix\localeurls\UrlManager
+class UrlManager extends \codemix\localeurls\UrlManager
 {
     /**
      * @var LanguageManager

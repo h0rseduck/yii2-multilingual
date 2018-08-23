@@ -13,7 +13,6 @@ Getting Started
 ---------------
 
 * [Installation](installation.md)
-* [Testing](testing.md)
 
 Documentation
 ---------
