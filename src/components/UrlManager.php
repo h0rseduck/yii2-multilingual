@@ -25,6 +25,16 @@ class UrlManager extends \codemix\localeurls\UrlManager
     /**
      * @inheritdoc
      */
+    public $languageSessionKey = 'language';
+
+    /**
+     * inheritdoc
+     */
+    public $languageCookieName = 'language';
+
+    /**
+     * @inheritdoc
+     */
     public function init()
     {
         $this->languageComponent = Instance::ensure($this->languageComponentName, LanguageManager::className());
