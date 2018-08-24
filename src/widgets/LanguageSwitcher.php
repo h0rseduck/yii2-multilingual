@@ -4,6 +4,7 @@ namespace h0rseduck\multilingual\widgets;
 
 use h0rseduck\multilingual\components\LanguageManager;
 use Yii;
+use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -45,7 +46,7 @@ class LanguageSwitcher extends \yii\base\Widget
     {
         parent::init();
         $this->view = $this->view ?: $this->_defaultView;
-        $this->languageComponent = Yii::$app->{$this->languageComponentName};
+        $this->languageComponent = Instance::ensure($this->languageComponentName, LanguageManager::className());
         $this->_languages = ArrayHelper::map(
             $this->languageComponent->getLanguages(),
             $this->languageComponent->modelFieldCode,

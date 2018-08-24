@@ -1,7 +1,9 @@
 <?php
 
 namespace h0rseduck\multilingual\components;
+
 use Yii;
+use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 
 /**
@@ -25,7 +27,7 @@ class UrlManager extends \codemix\localeurls\UrlManager
      */
     public function init()
     {
-        $this->languageComponent = Yii::$app->{$this->languageComponentName};
+        $this->languageComponent = Instance::ensure($this->languageComponentName, LanguageManager::className());
         $this->languages = ArrayHelper::getColumn($this->languageComponent->getLanguages(),$this->languageComponent->modelFieldCode);
         parent::init();
     }

@@ -8,6 +8,7 @@ use yii\base\Behavior;
 use yii\base\InvalidConfigException;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
+use yii\di\Instance;
 use yii\helpers\ArrayHelper;
 use yii\validators\Validator;
 
@@ -166,7 +167,7 @@ class MultilingualBehavior extends Behavior
         if (empty($this->attributes) || !is_array($this->attributes)) {
             throw new InvalidConfigException('Please specify multilingual attributes for the ' . get_class($this) . ' in the ' . get_class($this->owner));
         }
-        $this->languageComponent = Yii::$app->{$this->languageComponentName};
+        $this->languageComponent = Instance::ensure($this->languageComponentName, LanguageManager::className());
         $this->_languages = $this->languageComponent->getLanguages();
         $this->_currentLanguage = $this->languageComponent->getCurrentLanguage();
         $this->_languageKeys = ArrayHelper::map($this->_languages, $this->languageComponent->modelFieldCode, 'id');
