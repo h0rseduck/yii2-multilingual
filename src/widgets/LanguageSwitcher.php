@@ -85,7 +85,9 @@ class LanguageSwitcher extends \yii\base\Widget
                 'url' => $params,
             ];
         }
-
+        if(empty($languages)) {
+            return null;
+        }
         return $this->render($this->view, [
             'languages' => $languages
         ]);
