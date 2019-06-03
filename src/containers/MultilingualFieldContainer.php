@@ -54,10 +54,12 @@ class MultilingualFieldContainer extends BaseObject
      */
     public function label($label = null)
     {
-        if(count($this->languages) > 1) {
-            foreach ($this->fields as $field) {
-                $language = ucfirst($field->language);
+        foreach ($this->fields as $field) {
+            $language = ucfirst($field->language);
+            if(count($this->languages) > 1) {
                 $field->label("{$label} {$language}");
+            } else {
+                $field->label($label);
             }
         }
         return $this;
