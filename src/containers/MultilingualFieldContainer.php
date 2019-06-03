@@ -19,6 +19,11 @@ class MultilingualFieldContainer extends BaseObject
     public $fields;
 
     /**
+     * @var array List of languages.
+     */
+    public $languages = [];
+
+    /**
      * @param $method
      * @param $arguments
      * @return string
@@ -49,9 +54,11 @@ class MultilingualFieldContainer extends BaseObject
      */
     public function label($label = null)
     {
-        foreach ($this->fields as $field) {
-            $language = ucfirst($field->language);
-            $field->label("{$label} {$language}");
+        if(count($this->languages) > 1) {
+            foreach ($this->fields as $field) {
+                $language = ucfirst($field->language);
+                $field->label("{$label} {$language}");
+            }
         }
         return $this;
     }

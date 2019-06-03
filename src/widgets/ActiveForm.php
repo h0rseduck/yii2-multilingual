@@ -26,7 +26,7 @@ class ActiveForm extends \yii\bootstrap\ActiveForm
      */
     public function field($model, $attribute, $options = [])
     {
-        $fields = [];
+        $fields = $languages = [];
 
         $notMultilingual = (isset($options['multilingual']) && $options['multilingual'] === false);
         $multilingualField = (isset($options['multilingual']) && $options['multilingual']);
@@ -49,15 +49,16 @@ class ActiveForm extends \yii\bootstrap\ActiveForm
             return parent::field($model, $attribute, $options);
         }
 
-        return new MultilingualFieldContainer(['fields' => $fields]);
+        return new MultilingualFieldContainer(['fields' => $fields, 'languages' => $languages]);
     }
-    
+
     /**
      * Renders form language switcher.
-     * 
+     *
      * @param \yii\base\Model $model
      * @param string $view
      * @return string
+     * @throws \Exception
      */
     public function languageSwitcher($model, $view = null)
     {
